@@ -3,6 +3,7 @@ import React, { Component } from "react";
 import Welcome from "./authentication/Welcome"
 import Login from "./authentication/Login"
 import Register from "./authentication/Register"
+import News from "./news/News"
 export default class ApplicationViews extends Component {
 
   state = {
