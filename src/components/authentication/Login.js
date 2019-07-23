@@ -1,16 +1,20 @@
 import React, { Component } from 'react'
+import {Link} from 'react-router-dom'
 
 export default class Login extends Component {
-    // Set initial state
+
     state = {
         username: "",
         password: ""
     }
 
-    // Update state whenever an input field is edited
-    handleFieldChange = (event) => {
+    handleFieldChange = (evt) => {
+        // console.log(evt)
+        // console.log(evt.target)
+        console.log(evt.target.id)
         const stateToChange = {}
-        stateToChange[event.target.id] = event.target.value
+        stateToChange[evt.target.id] = evt.target.value
+        // console.log(stateToChange)
         this.setState(stateToChange)
     }
 
@@ -25,27 +29,23 @@ export default class Login extends Component {
         sessionStorage.setItem(
             "credentials",
             JSON.stringify({
-                email: this.state.username,
+                username: this.state.username,
                 password: this.state.password
             })
         )
-        this.props.history.push("/")
+        this.props.history.push("/news")
     }
-
-
-
 
     render() {
         return (
-            <div>
-             <label>Username</label>
-             <input type="text"></input>
-             <label>Password</label>
-             <input type="password"></input>
-             <button>login</button>
-            </div>
+            <form onSubmit={this.handleLogin}>
+                <label>Username:</label>
+                <input onChange={this.handleFieldChange} type="text" id="username"></input>
+                <label>Password:</label>
+                <input onChange={this.handleFieldChange} type="password" id="password"></input>
+                <button type="submit">Login</button>
+            </form>
         )
     }
 }
 
-// export default withRouter(Login)
