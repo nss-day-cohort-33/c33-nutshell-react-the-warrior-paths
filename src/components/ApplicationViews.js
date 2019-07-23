@@ -5,10 +5,31 @@ import Login from "./authentication/Login"
 import Register from "./authentication/Register"
 export default class ApplicationViews extends Component {
 
+  state = {
+    users: [],
+    messages: [],
+    news: [],
+    events: [],
+    tasks: [],
+    friends: []
+}
+
+componentDidMount() {
+    const newState = {};
+
+fetch("http://localhost:5002/users")
+  .then(r => r.json())
+  .then(user => newState.users=user)
+}
+
+isAuthenticated = () => sessionStorage.getItem("credentials") !== null
+
+
+
   render() {
     return (
       <React.Fragment>
-
+        
         <Route
           exact path="/" render={props => {
             return <Welcome/>
