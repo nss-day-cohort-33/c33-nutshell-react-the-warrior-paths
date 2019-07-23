@@ -6,7 +6,6 @@ import Register from "./authentication/Register"
 export default class ApplicationViews extends Component {
 
   state = {
-    users: [],
     messages: [],
     news: [],
     events: [],
@@ -29,7 +28,7 @@ isAuthenticated = () => sessionStorage.getItem("credentials") !== null
   render() {
     return (
       <React.Fragment>
-        
+
         <Route
           exact path="/" render={props => {
             return <Welcome/>
