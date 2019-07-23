@@ -3,6 +3,7 @@ import React, { Component } from "react";
 import Welcome from "./authentication/Welcome"
 import Login from "./authentication/Login"
 import Register from "./authentication/Register"
+import News from "./news/News"
 export default class ApplicationViews extends Component {
   state = {
     // users: [],
@@ -49,17 +50,14 @@ isAuthenticated = () => sessionStorage.getItem("credentials") !== null
   render() {
     return (
       <React.Fragment>
-        
+
         <Route
           exact path="/" render={props => {
-<<<<<<< HEAD
             return <Welcome />
-=======
-            return <Welcome/>
             // Remove null and return the component which will show news articles
           }}
         />
-        <Route
+        {/* <Route
            path="/login" render={props => {
             return <Login/>
             // Remove null and return the component which will show news articles
@@ -67,11 +65,8 @@ isAuthenticated = () => sessionStorage.getItem("credentials") !== null
         />
         <Route
            path="/register" render={props => {
-            return <Register/>
->>>>>>> master
-            // Remove null and return the component which will show news articles
-          }}
-        />
+            return <Register/> */}
+
         <Route
           exact path="/news" render={props => {
             if (this.isAuthenticated()) {
@@ -91,7 +86,7 @@ isAuthenticated = () => sessionStorage.getItem("credentials") !== null
           exact path="/news" render={props => {
             return <News />
             // Remove null and return the component which will show news articles
-          }}
+           }}
         /> */}
 
         <Route
@@ -115,11 +110,8 @@ isAuthenticated = () => sessionStorage.getItem("credentials") !== null
           }}
         />
 
-<<<<<<< HEAD
         <Route path="/login" component={Login} />
 
-=======
->>>>>>> master
       </React.Fragment>
     );
   }
