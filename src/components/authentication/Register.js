@@ -12,6 +12,7 @@ class Register extends Component {
 
     addUser = user => {
         return APIManager.post("users", user)
+            .then((user) => sessionStorage.setItem("credentials", user.id))
           .then(() => APIManager.getAll("users"))
           .then(users =>
             this.setState({
@@ -35,14 +36,6 @@ class Register extends Component {
             password: this.state.password
         }
         this.addUser(user)
-            .then(() => sessionStorage.setItem(
-                "credentials",
-                JSON.stringify({
-                    username: this.state.username,
-                    email: this.state.email,
-                    password: this.state.password
-                })
-            ))
             .then(() => this.props.history.push('/news'))
     }
 
