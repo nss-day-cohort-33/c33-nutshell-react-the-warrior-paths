@@ -1,111 +1,173 @@
 import { Route, Redirect } from "react-router-dom";
 import React, { Component } from "react";
-import Welcome from "./authentication/Welcome"
-import Login from "./authentication/Login"
-import Register from "./authentication/Register"
-import News from "./news/News"
-import TaskList from "./task/TaskList"
-import APIManager from "../modules/APIManager"
-
+import Welcome from "./authentication/Welcome";
+import Login from "./authentication/Login";
+import Register from "./authentication/Register";
+import News from "./news/News";
+import APIManager from "../modules/APIManager";
+import Messages from "./message/Messages";
+import TaskForm from "./task/TaskForm";
+import TaskList from "./task/TaskList";
+import TaskEditForm from "./task/TasksEditForm"
 
 export default class ApplicationViews extends Component {
-
-
-
-
-    // fetch("http://localhost:5002/users")
-    //   .then(r => r.json())
-    //   .then(user => newState.users = user)
-      // .then(fetch("http://localhost:3000/news"))
-      // .then(r => r.json())
-      // .then(news => newState.news = news)
-
-
   state = {
-    messages: [],
-    news: [],
     events: [],
+    messages: [],
     tasks: [],
-    friends: []
-}
+    news: []
+  };
 
-componentDidMount() {
+  componentDidMount() {
     const newState = {};
 
-fetch("http://localhost:5002/user")
-  .then(r => r.json())
-  .then(user => newState.users=user)
-}
+    //   fetch("http://localhost:5002/messages")
+    //     .then(r => r.json())
+    //     .then(message => newState.messages = message)
+    //     .then(fetch("http://localhost:5002/users")
+    //     .then(r => r.json()))
+    //     .then(user => newState.users = user)
+    //     .then(() => this.setState(newState))
+    // }
 
-// isAuthenticated = () => sessionStorage.getItem("credentials") !== null
-isAuthenticated = () => (sessionStorage.getItem("userId") !== null || localStorage.getItem("userId") !== null)
+    APIManager.getAll("tasks")
+      .then(tasks => (newState.tasks = tasks))
+      // }).then(() => APIManager.getAll("events").then(events => {
+      //   newState.events = events
+      // })).then(() => APIManager.getAll("articles").then(articles => {
+      //   newState.articles = articles
+      // })).then(() => APIManager.getAll("messages").then(messages => {
+      //   newState.messages = message
+      // })).then(() => APIManager.getAll("users").then(users => {
+      //   newState.users = users
+      //}))
+      .then(() => this.setState(newState));
+  }
 
-  
+  isAuthenticated = () => sessionStorage.getItem("credentials") !== null;
+
+  addTask = task => {
+    return APIManager.post("tasks", task) //do i need to do return here?
+      .then(() => APIManager.getAll("animalsFromAPI"))
+      .then(tasks =>
+        this.setState({
+          tasks: tasks
+        })
+      );
+  };
+
+  editTask = editedTaskObject => {
+    return APIManager.put("tasks", editedTaskObject)
+      .then(() => APIManager.getAll("tasks"))
+      .then(tasks => {
+        // console.log(tasks)
+        this.setState({
+          tasks: tasks
+        });
+      });
+  };
+
+  deleteTask = id => {
+    return APIManager.delete("tasks", id)
+      .then(() => APIManager.getAll("tasks"))
+      .then(tasks => {
+        this.props.history.push("/tasks");
+        this.setState({ tasks: tasks });
+      });
+  };
+
   render() {
     return (
       <React.Fragment>
-
         <Route
-          exact path="/" render={props => {
-            return <Welcome />
+          exact
+          path="/"
+          render={props => {
+            return <Welcome />;
             // Remove null and return the component which will show news articles
           }}
         />
-        {/* <Route
-           path="/login" render={props => {
-            return <Login/>
-            // Remove null and return the component which will show news articles
-          }}
-        />
-        <Route
-           path="/register" render={props => {
-            return <Register/> */}
 
         <Route
-          exact path="/news" render={props => {
+          exact
+          path="/news"
+          render={props => {
             if (this.isAuthenticated()) {
-              return <News users={this.state.news} />
+              return <News users={this.state.users} />;
             } else {
-              return <Redirect to="/login" />
+              return <Redirect to="/login" />;
             }
           }}
         />
-        <Route
-          exact path="/register" render={props => {
-            return <Register />
-            // Remove null and return the component which will show news articles
-          }}
-        />
-        {/* <Route
-          exact path="/news" render={props => {
-            return <News />
-            // Remove null and return the component which will show news articles
-           }}
-        /> */}
 
         <Route
-          path="/friends" render={props => {
-            return null
-            // Remove null and return the component which will show list of friends
+          exact
+          path="/register"
+          render={props => {
+            return (
+              <Register
+                {...props}
+                users={this.state.users}
+                addUser={this.addUser}
+              />
+            );
           }}
         />
 
         <Route
-          path="/messages" render={props => {
-            return null
-            // Remove null and return the component which will show the messages
+          path="/friends"
+          render={props => {
+            return null;
           }}
         />
 
+        <Route
+          path="/messages"
+          render={props => {
+            return (
+              <Messages
+                messages={this.state.messages}
+                users={this.state.users}
+              />
+            );
+          }}
+        />
 
-        <Route exact path="/tasks" render={(props) => {
+        <Route
+          exact
+          path="/tasks"
+          render={props => {
+            return (
+              <TaskList
+                {...props}
+                tasks={this.state.tasks}
+                deleteTask={this.deleteTask}
 
-            return <TaskList getAllUsers={this.getAllUsers} getCurrentUser={this.getCurrentUser} />
-
-        }} />
+              />
+            );
+          }}
+        />
+        <Route
+          exact
+          path="/tasks/new"
+          render={props => {
+            return <TaskForm {...props} addTask={this.addTask} />;
+          }}
+        />
+        <Route
+          path="/tasks/:taskId(\d+)/edit"
+          render={props => {
+            return (
+              <TaskEditForm
+                {...props}
+                editTask={this.editTask}
+                tasks={this.state.tasks}
+              />
+            );
+          }}
+        />
 
         <Route path="/login" component={Login} />
-
       </React.Fragment>
     );
   }

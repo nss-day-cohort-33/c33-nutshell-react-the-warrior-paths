@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 // import "./task.css"
-import APIManager from "../../modules/APIManager"
+// import APIManager from "../../modules/APIManager"
 // import { Link } from "react-router-dom";
 
-class TaskList extends Component {
+export default class TaskList extends Component {
 
     render() {
         console.log(this.props.tasks)
@@ -45,7 +45,3 @@ class TaskList extends Component {
         )
     }
 }
-
-
-
-export default TaskList
