@@ -4,10 +4,7 @@ import APIManager from "../../modules/APIManager"
 import { withRouter } from 'react-router'
 
 
-
-
 class TaskEditForm extends Component {
-
 
     // Set initial state
     state = {
@@ -60,7 +57,7 @@ componentDidMount() {
 }
 
 render() {
-    console.log(sessionStorage.getItem("credentials"))
+    // console.log(sessionStorage.getItem("credentials"))
     return (
         <React.Fragment>
             <form className="taskForm">
