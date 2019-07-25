@@ -1,39 +1,35 @@
 import React, { Component } from 'react'
-import {Link} from 'react-router-dom'
+import { withRouter } from 'react-router-dom'
+import APIManager from '../../modules/APIManager';
+// import {Link} from 'react-router-dom'
 
-export default class Login extends Component {
+class Login extends Component {
 
     state = {
         username: "",
-        password: ""
+        password: "",
+        id: ""
     }
 
+
     handleFieldChange = (evt) => {
-        // console.log(evt)
-        // console.log(evt.target)
-        console.log(evt.target.id)
         const stateToChange = {}
         stateToChange[evt.target.id] = evt.target.value
-        // console.log(stateToChange)
         this.setState(stateToChange)
     }
 
-    // Simplistic handler for login submit
     handleLogin = (e) => {
         e.preventDefault()
 
-        /*
-            For now, just store the email and password that
-            the customer enters into local storage.
-        */
-        sessionStorage.setItem(
-            "credentials",
-            JSON.stringify({
-                username: this.state.username,
-                password: this.state.password
-            })
-        )
-        this.props.history.push("/news")
+        APIManager.getAll("users").then(user => {
+            const singleUser = user.find(
+                el => el.username.toLowerCase() === this.state.username.toLowerCase() && el.password.toLowerCase() === this.state.password.toLowerCase()
+            )
+            if (singleUser) {
+                sessionStorage.setItem("userId", singleUser.id)
+                this.props.history.push('/news')
+            }
+        })
     }
 
     render() {
@@ -49,3 +45,4 @@ export default class Login extends Component {
     }
 }
 
+export default withRouter(Login)

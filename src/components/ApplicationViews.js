@@ -26,10 +26,17 @@ componentDidMount() {
 
     APIManager.getAll("events")
           .then(events => (newState.events = events))
-          .then(() => this.setState(newState))
+          fetch("http://localhost:5002/messages")
+            .then(r => r.json())
+            .then(message => newState.messages = message)
+            .then(fetch("http://localhost:5002/users")
+            .then(r => r.json()))
+            .then(user => newState.users = user)
+            .then(() => this.setState(newState))
+          }
           
           
-        }
+        
         addEvent = event => {
             return APIManager.post("events", event)
               .then(() => APIManager.getAll("events"))
@@ -58,13 +65,12 @@ componentDidMount() {
 
 isAuthenticated = () => sessionStorage.getItem("credentials") !== null
 
-
-
+  
 
   render() {
     return (
       <React.Fragment>
-        
+
         <Route
           exact path="/" render={props => {
             return <Welcome/>
@@ -78,41 +84,35 @@ isAuthenticated = () => sessionStorage.getItem("credentials") !== null
             // Remove null and return the component which will show news articles
           }}
         />
+
         <Route
           exact path="/news" render={props => {
             if (this.isAuthenticated()) {
-              return <News users={this.state.news} />
+              return <News users={this.state.users} />
             } else {
               return <Redirect to="/login" />
             }
           }}
         />
+
         <Route
           exact path="/register" render={props => {
-            return <Register />
-            // Remove null and return the component which will show news articles
+            return <Register {...props} users={this.state.users} addUser={this.addUser}/>
           }}
         />
-        {/* <Route
-          exact path="/news" render={props => {
-            return <News />
-            // Remove null and return the component which will show news articles
-          }}
-        /> */}
 
         <Route
           path="/friends" render={props => {
             return null
-            // Remove null and return the component which will show list of friends
           }}
         />
 
-        <Route
+        {/* <Route
           path="/messages" render={props => {
-            return null
-            // Remove null and return the component which will show the messages
+            return <Messages messages={this.state.messages} 
+                  users={this.state.users}/>
           }}
-        />
+        /> */}
 
         <Route
           path="/tasks" render={props => {
@@ -139,13 +139,10 @@ isAuthenticated = () => sessionStorage.getItem("credentials") !== null
           }}
         />
 
-
-
-<Route path = "/login" component = {Login} />
-
-        
+        <Route path="/login" component={Login} />
 
       </React.Fragment>
     );
   }
 }
+
