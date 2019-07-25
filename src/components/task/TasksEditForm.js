@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import "./task.css"
 import APIManager from "../../modules/APIManager"
+import { withRouter } from 'react-router'
 
 
 
 
-export default class TaskEditForm extends Component {
+class TaskEditForm extends Component {
 
 
     // Set initial state
@@ -21,7 +22,6 @@ export default class TaskEditForm extends Component {
     handleFieldChange = evt => {
         const stateToChange = {};
         stateToChange[evt.target.id] = evt.target.value;
-
         this.setState(stateToChange);
     };
 
@@ -31,7 +31,7 @@ export default class TaskEditForm extends Component {
         } else {
         evt.preventDefault();
         const task = {
-            id: this.props.match.params.taskId,
+            id: Number(this.props.match.params.taskId),
             taskName: this.state.taskName,
             completionDate: this.state.completionDate,
             userId: Number(sessionStorage.getItem("credentials")),
@@ -39,7 +39,7 @@ export default class TaskEditForm extends Component {
 
 
         };
-        
+
         this.props
             .editTask(task)
             .then(() => this.props.history.push("/tasks"));
@@ -48,7 +48,7 @@ export default class TaskEditForm extends Component {
 };
 
 componentDidMount() {
-    APIManager.get(this.props.match.params.taskId)
+    APIManager.get("tasks", this.props.match.params.taskId)
         .then(task => {
             this.setState({
                 taskName: task.taskName,
@@ -60,6 +60,7 @@ componentDidMount() {
 }
 
 render() {
+    console.log(sessionStorage.getItem("credentials"))
     return (
         <React.Fragment>
             <form className="taskForm">
@@ -106,3 +107,5 @@ render() {
     );
 }
 }
+
+export default withRouter (TaskEditForm)

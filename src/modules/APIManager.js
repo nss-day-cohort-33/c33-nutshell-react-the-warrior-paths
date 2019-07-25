@@ -50,14 +50,16 @@ export default Object.create(null, {
 
   //edit entry
   put: {
-    value: function(resource, editedAnimal) {
-      return fetch(`${remoteURL}/${resource}/${editedAnimal.id}`, {
+    value: function(resource, editedThing) {
+      return fetch(`${remoteURL}/${resource}/${editedThing.id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify(editedAnimal)
+        body: JSON.stringify(editedThing)
       }).then(data => data.json());
     }
   }
 });
+
+

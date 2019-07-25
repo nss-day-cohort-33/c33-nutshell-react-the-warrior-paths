@@ -1,5 +1,6 @@
 import { Route, Redirect } from "react-router-dom";
 import React, { Component } from "react";
+import { withRouter } from 'react-router'
 import Welcome from "./authentication/Welcome";
 import Login from "./authentication/Login";
 import Register from "./authentication/Register";
@@ -10,12 +11,13 @@ import TaskForm from "./task/TaskForm";
 import TaskList from "./task/TaskList";
 import TaskEditForm from "./task/TasksEditForm"
 
-export default class ApplicationViews extends Component {
+ class ApplicationViews extends Component {
   state = {
     events: [],
     messages: [],
     tasks: [],
-    news: []
+    news: [],
+    users: []
   };
 
   componentDidMount() {
@@ -38,17 +40,19 @@ export default class ApplicationViews extends Component {
       //   newState.articles = articles
       // })).then(() => APIManager.getAll("messages").then(messages => {
       //   newState.messages = message
-      // })).then(() => APIManager.getAll("users").then(users => {
-      //   newState.users = users
-      //}))
+      // }))
+      .then(() => APIManager.getAll("users").then(users => {
+        newState.users = users
+      }))
       .then(() => this.setState(newState));
   }
 
   isAuthenticated = () => sessionStorage.getItem("credentials") !== null;
+  activeUserId = () => parseInt(sessionStorage.getItem("credentials"))
 
   addTask = task => {
     return APIManager.post("tasks", task) //do i need to do return here?
-      .then(() => APIManager.getAll("animalsFromAPI"))
+      .then(() => APIManager.getAll("tasks"))
       .then(tasks =>
         this.setState({
           tasks: tasks
@@ -56,7 +60,7 @@ export default class ApplicationViews extends Component {
       );
   };
 
-  editTask = editedTaskObject => {
+  editTask = (editedTaskObject) => {
     return APIManager.put("tasks", editedTaskObject)
       .then(() => APIManager.getAll("tasks"))
       .then(tasks => {
@@ -67,11 +71,11 @@ export default class ApplicationViews extends Component {
       });
   };
 
-  deleteTask = id => {
+  deleteTask = (id) => {
     return APIManager.delete("tasks", id)
       .then(() => APIManager.getAll("tasks"))
       .then(tasks => {
-        this.props.history.push("/tasks");
+        // this.props.history.push();
         this.setState({ tasks: tasks });
       });
   };
@@ -136,7 +140,7 @@ export default class ApplicationViews extends Component {
         <Route
           exact
           path="/tasks"
-          render={props => {
+          render={(props) => {
             return (
               <TaskList
                 {...props}
@@ -150,7 +154,7 @@ export default class ApplicationViews extends Component {
         <Route
           exact
           path="/tasks/new"
-          render={props => {
+          render={(props) => {
             return <TaskForm {...props} addTask={this.addTask} />;
           }}
         />
@@ -172,3 +176,5 @@ export default class ApplicationViews extends Component {
     );
   }
 }
+
+export default withRouter(ApplicationViews)

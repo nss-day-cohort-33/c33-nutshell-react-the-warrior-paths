@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+// import ApplicationViews from '../ApplicationViews';
 // import "./task.css"
 // import APIManager from "../../modules/APIManager"
 // import { Link } from "react-router-dom";
@@ -29,13 +30,15 @@ export default class TaskList extends Component {
                                     className="btn btn-success"
                                     onClick={() => {
                                         this.props.history.push(`/tasks/${task.id}/edit`);
+                                        
                                     }}
                                 >
                                     Edit
                                 </button> <br></br>
-                                <a href="#"
+
+                                <button
                                     onClick={() => this.props.deleteTask(task.id)}
-                                    className="card-link">Delete</a>
+                                    className="card-link">Delete</button>
                             </div>
 
                         )
@@ -45,3 +48,5 @@ export default class TaskList extends Component {
         )
     }
 }
+
+
