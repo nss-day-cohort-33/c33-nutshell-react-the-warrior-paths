@@ -46,8 +46,8 @@ export default Object.create(null, {
   },
 
   put: {
-    value: function(resource, editedAnimal) {
-      return fetch(`${remoteURL}/${resource}/${editedAnimal.id}`, {
+    value: function(resource, editedAnimal, id) {
+      return fetch(`${remoteURL}/${resource}/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json"

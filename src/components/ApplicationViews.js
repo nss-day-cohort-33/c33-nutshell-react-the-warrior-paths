@@ -31,6 +31,9 @@ export default class ApplicationViews extends Component {
       .then(() => this.setState(newState));
   }
 
+  isAuthenticated = () => sessionStorage.getItem("current_user") !== null
+
+// NEWS FUNCTIONS BEGIN
   deleteArticle = id => {
     return APIManager.delete("news", id)
       .then(() => APIManager.getAll("news"))
@@ -42,7 +45,7 @@ export default class ApplicationViews extends Component {
   };
 
   addArticle = article => {
-    return APIManager.post(article, "news")
+    return APIManager.post("news", article)
       .then(() => APIManager.getAll("news"))
       .then(news =>
         this.setState({
@@ -51,30 +54,30 @@ export default class ApplicationViews extends Component {
       );
   };
 
-  isAuthenticated = () => sessionStorage.getItem("current_user") !== null
+  updateArticle = (editedArticle,id) => {
+    return APIManager.put("news",editedArticle,id )
+      .then(() => APIManager.getAll("news"))
+      .then(news =>
+        this.setState({
+          news: news
+        })
+      );
+  };
+// NEWS FUNCTIONS END
 
   render() {
     return (
       <React.Fragment>
-
         <Route
           exact path="/" render={props => {
             return <Welcome />
-            // Remove null and return the component which will show news articles
           }}
         />
-
-
-         <Route
-          exact
-          path="/news"
-          render={props => {
+        {/* NEWS ROUTES BEGIN */}
+         <Route exact path="/news" render={props => {
             if (this.isAuthenticated()) {
               return (
-                <News
-                  {...props}
-                  deleteArticle={this.deleteArticle}
-                  news={this.state.news}
+                <News {...props} deleteArticle={this.deleteArticle} news={this.state.news}
                 />
               );
             } else {
@@ -82,24 +85,16 @@ export default class ApplicationViews extends Component {
             }
           }}
         />
-        <Route
-          exact
-          path="/news/new"
-          render={props => {
+        <Route exact path="/news/new" render={props => {
             return <NewsForm {...props} addArticle={this.addArticle} />;
           }}
         />
-        <Route
-          exact
-          path="/news/:newsId(\d+)/edit"
-          render={props => {
-            return (
-              <NewsEditForm {...props} updateArticle={this.updateArticle} />
-            );
+        <Route exact path="/news/:newsId(\d+)/edit" render={props => {
+            return <NewsEditForm {...props} updateArticle={this.updateArticle} />
+            ;
           }}
         />
-        {/* End news routes */}
-
+        {/* NEWS ROUTES END */}
         <Route
           exact path="/register" render={props => {
             return <Register {...props} users={this.state.users} addUser={this.addUser}/>
@@ -122,7 +117,6 @@ export default class ApplicationViews extends Component {
         <Route
           path="/tasks" render={props => {
             return null
-            // Remove null and return the component which will show the user's tasks
           }}
         />
 

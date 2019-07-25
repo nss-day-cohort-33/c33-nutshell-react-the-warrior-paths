@@ -16,9 +16,9 @@ export default class NewsEditForm extends Component {
     this.setState(stateToChange);
   };
 
-  updateExistingArticle = evt => {
+  updateArticle = evt => {
     evt.preventDefault();
-
+    var newsId = this.props.match.params.newsId
         const editedArticle = {
             id: this.props.match.params.newsId,
             userId: +(sessionStorage.getItem("current_user")),
@@ -28,10 +28,8 @@ export default class NewsEditForm extends Component {
             timeStamp: Date.now()
         };
 
-    this.props
-      .updateArticle(editedArticle)
+    this.props.updateArticle(editedArticle, newsId)
       .then(() => this.props.history.push("/news"));
-    // }
   };
 
   componentDidMount() {
@@ -86,7 +84,7 @@ export default class NewsEditForm extends Component {
           </div>
           <button
             type="submit"
-            onClick={this.updateExistingArticle}
+            onClick={this.updateArticle}
             className="btn btn-primary"
           >
             Submit

@@ -4,10 +4,9 @@ import "./News.css"
 export default class NewsForm extends Component {
     state = {
         userId: "",
-        articleTitle: "",
+        title: "",
         url: "",
-        synopsis: "",
-        id: ""
+        synopsis: ""
     };
 
     handleFieldChange = evt => {
@@ -16,35 +15,32 @@ export default class NewsForm extends Component {
         this.setState(stateToChange);
       };
 
-    constructNewArticle = evt => {
+    addNewArticle = evt => {
         evt.preventDefault();
           const article = {
             userId: +(sessionStorage.getItem("current_user")),
-            title: this.state.articleTitle,
+            title: this.state.title,
             url: this.state.url,
             synopsis: this.state.synopsis,
             timeStamp: Date.now()
           }
-        this.props
-            .addArticle(article)
+        this.props.addArticle(article)
             .then(() => this.props.history.push("/news"));
-        // }
     }
-
 
     render() {
         return (
         <React.Fragment>
             <form className="newsForm">
             <div className="form-group">
-                <label htmlFor="articleTitle">Title</label>
+                <label htmlFor="title">Title</label>
                 <input
                 type="text"
                 required
                 className="form-control"
                 onChange={this.handleFieldChange}
-                id="articleTitle"
-                placeholder="Article Title"
+                id="title"
+                placeholder="title"
                 />
             </div>
             <div className="form-group">
@@ -71,7 +67,7 @@ export default class NewsForm extends Component {
             </div>
             <button
                 type="submit"
-                onClick={this.constructNewArticle}
+                onClick={this.addNewArticle}
                 className="btn btn-primary"
             >
                 Submit
