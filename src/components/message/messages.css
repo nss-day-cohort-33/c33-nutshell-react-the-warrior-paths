@@ -1,0 +1,15 @@
+.buttons {
+    display: flex;
+    justify-content: right;
+}
+
+#message {
+    margin: 10px;
+    width: 94%
+}
+
+.sendBtn {
+    width: 4%;
+    /* margin-left: 10px */
+}
+

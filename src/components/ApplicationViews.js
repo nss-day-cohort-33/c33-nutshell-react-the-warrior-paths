@@ -34,7 +34,7 @@ import EditForm from "./event/editForm";
       .then(tasks => (newState.tasks = tasks))
     APIManager.getAll("events")
     .then(events => (newState.events = events))
-    fetch("http://localhost:5002/messages")
+    fetch("http://localhost:5002/messages?_expand=user")
       .then(r => r.json())
       .then(message => newState.messages = message)
       .then(fetch("http://localhost:5002/users")
@@ -45,7 +45,6 @@ import EditForm from "./event/editForm";
 
 
 
-  isAuthenticated = () => sessionStorage.getItem("credentials") !== null;
   activeUserId = () => parseInt(sessionStorage.getItem("credentials"))
 
   addTask = task => {
@@ -56,6 +55,24 @@ import EditForm from "./event/editForm";
           tasks: tasks
         })
       );
+  };
+
+  addMessage = (data) => {
+    APIManager.post("messages", data)
+      .then(() => APIManager.getAll("messages?_expand=user"))
+      .then(messages =>
+        this.setState({
+          messages: messages
+        })
+      )
+  }
+
+  deleteMessage = (id) => {
+    return APIManager.delete("messages", id)
+      .then(() => APIManager.getAll("messages?_expand=user"))
+      .then(message => {
+        this.setState({ messages: message });
+      });
   };
 
   editTask = (editedTaskObject) => {
@@ -156,24 +173,23 @@ import EditForm from "./event/editForm";
         <Route
           path="/messages"
           render={props => {
-            return (
-              <Messages
-                messages={this.state.messages}
-                users={this.state.users}
-              />
-            );
+              return <Messages messages={this.state.messages} 
+              addMessage={this.addMessage} 
+              deleteMessage={this.deleteMessage}
+              users={this.state.users}/>
+              
             }
           }
           />
          <Route exact path="/news" render={props => {
-            if (this.isAuthenticated()) {
+            // if (this.isAuthenticated()) {
               return (
                 <News {...props} deleteArticle={this.deleteArticle} news={this.state.news}
                 />
               );
-            } else {
-              return <Redirect to="/" />;
-            }
+            // } else {
+            //   return <Redirect to="/" />;
+            // }
           }}
         />
         <Route exact path="/news/new" render={props => {
