@@ -26,9 +26,9 @@ class Login extends Component {
                 el => el.username.toLowerCase() === this.state.username.toLowerCase() && el.password.toLowerCase() === this.state.password.toLowerCase()
             )
             if (singleUser) {
-                sessionStorage.setItem("userId", singleUser.id)
-                this.props.history.push('/news')
+                sessionStorage.setItem("credentials", singleUser.id)
             }
+            this.props.history.push('/news')
         })
     }
 

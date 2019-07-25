@@ -6,12 +6,14 @@ import Register from "./authentication/Register"
 import News from './news/News'
 // import APIManager from '../modules/APIManager'
 import Messages from './message/Messages'
+import APIManager from "../modules/APIManager";
 export default class ApplicationViews extends Component {
   state = {
     events: [],
     messages: [],
     tasks: [],
     news: [],
+    users: []
   }
 
   componentDidMount() {
@@ -25,6 +27,24 @@ export default class ApplicationViews extends Component {
       .then(user => newState.users = user)
       .then(() => this.setState(newState))
   }
+
+  addMessage = (data) => {
+    APIManager.post("messages", data)
+      .then(() => APIManager.getAll("messages", "_expand=user"))
+      .then(messages =>
+        this.setState({
+          messages: messages
+        })
+      )
+  }
+
+  deleteMessage = (id) => {
+    return APIManager.delete("messages", id)
+      .then(() => APIManager.getAll("messages"))
+      .then(message => {
+        this.setState({ messages: message });
+      });
+  };
 
   isAuthenticated = () => sessionStorage.getItem("credentials") !== null
 
@@ -63,8 +83,14 @@ export default class ApplicationViews extends Component {
 
         <Route
           path="/messages" render={props => {
+            if(this.isAuthenticated()) {
             return <Messages messages={this.state.messages} 
-                  users={this.state.users}/>
+            addMessage={this.addMessage} 
+            deleteMessage={this.deleteMessage}
+            users={this.state.users}/>
+            } else {
+              return <Redirect to="/login" />
+            }
           }}
         />
 
