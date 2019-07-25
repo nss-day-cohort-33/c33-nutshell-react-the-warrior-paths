@@ -19,7 +19,7 @@ export default class ApplicationViews extends Component {
   componentDidMount() {
     const newState = {};
 
-    fetch("http://localhost:5002/messages")
+    fetch("http://localhost:5002/messages?_expand=user")
       .then(r => r.json())
       .then(message => newState.messages = message)
       .then(fetch("http://localhost:5002/users")
@@ -30,7 +30,7 @@ export default class ApplicationViews extends Component {
 
   addMessage = (data) => {
     APIManager.post("messages", data)
-      .then(() => APIManager.getAll("messages", "_expand=user"))
+      .then(() => APIManager.getAll("messages?_expand=user"))
       .then(messages =>
         this.setState({
           messages: messages
@@ -40,7 +40,7 @@ export default class ApplicationViews extends Component {
 
   deleteMessage = (id) => {
     return APIManager.delete("messages", id)
-      .then(() => APIManager.getAll("messages"))
+      .then(() => APIManager.getAll("messages?_expand=user"))
       .then(message => {
         this.setState({ messages: message });
       });

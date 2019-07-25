@@ -4,7 +4,7 @@ import MessageCard from "./MessageCard"
 export default class Message extends Component {
 
   state = {
-    user_id: +sessionStorage.getItem("credentials"),
+    userId: +sessionStorage.getItem("credentials"),
     message: ""
   }
 
@@ -19,7 +19,7 @@ export default class Message extends Component {
     e.preventDefault()
     console.log("clicked")
     const message = {
-      user_id: this.state.user_id,
+      userId: this.state.userId,
       message: this.state.message
     }
     console.log("state change", message)
@@ -31,8 +31,8 @@ export default class Message extends Component {
       <React.Fragment>
         <section className="messages">
           {this.props.messages
-            // .filter(msg => msg.user_id === users.id)
-            // .filter(message => message.user_id === parseInt(sessionStorage.getItem("credentials")))
+            // .filter(msg => msg.userId === users.id)
+            // .filter(message => message.userId === parseInt(sessionStorage.getItem("credentials")))
             .map(message => (
               <div key={message.id}>
                 <MessageCard message={message} {...this.props} />
