@@ -2,18 +2,19 @@ const remoteURL = "http://localhost:5002";
 //The Object.create() method creates a new object, using an existing object as the prototype of the newly created object.
 
 export default Object.create(null, {
+  //get entry
   get: {
     value: function(resource, id) {
       return fetch(`${remoteURL}/${resource}/${id}`).then(e => e.json());
     }
   },
-
   getAll: {
     value: function(resource) {
       return fetch(`${remoteURL}/${resource}`).then(e => e.json());
     }
   },
 
+//delete entry
   delete: {
     value: function(resource, id) {
       return fetch(`${remoteURL}/${resource}/${id}`, {
@@ -22,6 +23,7 @@ export default Object.create(null, {
     }
   },
 
+  //add entry
   post: {
     value: function(resource, newObject) {
       return fetch(`${remoteURL}/${resource}`, {
@@ -45,9 +47,21 @@ export default Object.create(null, {
     }
   },
 
+  //edit entry
   put: {
-    value: function(resource, editedAnimal) {
-      return fetch(`${remoteURL}/${resource}/${editedAnimal.id}`, {
+    value: function(resource, editedThing) {
+      return fetch(`${remoteURL}/${resource}/${editedThing.id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(editedThing)
+      }).then(data => data.json());
+    }
+  },
+  newsPut: {
+    value: function(resource, editedAnimal, id) {
+      return fetch(`${remoteURL}/${resource}/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json"
@@ -57,3 +71,7 @@ export default Object.create(null, {
     }
   }
 });
+
+
+
+
