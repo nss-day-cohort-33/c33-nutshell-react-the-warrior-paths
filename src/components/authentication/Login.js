@@ -9,12 +9,9 @@ export default class Login extends Component {
     }
 
     handleFieldChange = (evt) => {
-        // console.log(evt)
-        // console.log(evt.target)
         console.log(evt.target.id)
         const stateToChange = {}
         stateToChange[evt.target.id] = evt.target.value
-        // console.log(stateToChange)
         this.setState(stateToChange)
     }
 
