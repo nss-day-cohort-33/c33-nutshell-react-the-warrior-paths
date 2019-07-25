@@ -1,30 +1,37 @@
 import { Route, Redirect } from "react-router-dom";
 import React, { Component } from "react";
-import Welcome from "./authentication/Welcome"
-import Login from "./authentication/Login"
-import Register from "./authentication/Register"
-import News from './news/News'
+import { withRouter } from 'react-router'
+import Welcome from "./authentication/Welcome";
+import Login from "./authentication/Login";
+import Register from "./authentication/Register";
+import News from "./news/News";
+import APIManager from "../modules/APIManager";
+import Messages from "./message/Messages";
+import TaskForm from "./task/TaskForm";
+import TaskList from "./task/TaskList";
+import TaskEditForm from "./task/TasksEditForm"
 import NewsForm from "./news/NewsForm";
 import NewsEditForm from "./news/NewsEditForm";
-import Messages from './message/Messages'
-import APIManager from '../modules/APIManager'
 import EventsForm from "./event/eventsForm"
 import Events from "./event/Events"
 import EditForm from "./event/editForm";
 
-export default class ApplicationViews extends Component {
-
+ class ApplicationViews extends Component {
   state = {
-    users: [],
-    messages: [],
-    news: [],
     events: [],
+    messages: [],
     tasks: [],
-    friends: []
-}
+    news: [],
+    users: []
+  };
 
-componentDidMount() {
+
+
+
+  componentDidMount() {
     const newState = {};
+    APIManager.getAll("tasks")
+      .then(tasks => (newState.tasks = tasks))
     APIManager.getAll("events")
     .then(events => (newState.events = events))
     fetch("http://localhost:5002/messages")
@@ -36,7 +43,41 @@ componentDidMount() {
       .then(() => this.setState(newState))
     }
 
-  isAuthenticated = () => sessionStorage.getItem("current_user") !== null
+
+
+  isAuthenticated = () => sessionStorage.getItem("credentials") !== null;
+  activeUserId = () => parseInt(sessionStorage.getItem("credentials"))
+
+  addTask = task => {
+    return APIManager.post("tasks", task) //do i need to do return here?
+      .then(() => APIManager.getAll("tasks"))
+      .then(tasks =>
+        this.setState({
+          tasks: tasks
+        })
+      );
+  };
+
+  editTask = (editedTaskObject) => {
+    return APIManager.put("tasks", editedTaskObject)
+      .then(() => APIManager.getAll("tasks"))
+      .then(tasks => {
+        // console.log(tasks)
+        this.setState({
+          tasks: tasks
+        });
+      });
+  };
+
+  deleteTask = (id) => {
+    return APIManager.delete("tasks", id)
+      .then(() => APIManager.getAll("tasks"))
+      .then(tasks => {
+        // this.props.history.push();
+        this.setState({ tasks: tasks });
+      });
+  };
+
 
 // NEWS FUNCTIONS BEGIN
   deleteArticle = id => {
@@ -102,19 +143,28 @@ componentDidMount() {
     return (
       <React.Fragment>
         <Route
-          exact path="/" render={props => {
-            return <Welcome/>
+          exact
+          path="/"
+          render={props => {
+            return <Welcome />;
             // Remove null and return the component which will show news articles
           }}
         />
 
+
+
         <Route
-           path="/register" render={props => {
-            return <Register/>
-            // Remove null and return the component which will show news articles
-          }}
-        />
-        {/* NEWS ROUTES BEGIN */}
+          path="/messages"
+          render={props => {
+            return (
+              <Messages
+                messages={this.state.messages}
+                users={this.state.users}
+              />
+            );
+            }
+          }
+          />
          <Route exact path="/news" render={props => {
             if (this.isAuthenticated()) {
               return (
@@ -143,23 +193,41 @@ componentDidMount() {
         />
 
         <Route
-          path="/friends" render={props => {
-            return null
+          exact
+          path="/tasks"
+          render={(props) => {
+            return (
+              <TaskList
+                {...props}
+                tasks={this.state.tasks}
+                deleteTask={this.deleteTask}
+
+              />
+            );
           }}
         />
-
-        {/* <Route
-          path="/messages" render={props => {
-            return <Messages messages={this.state.messages}
-                  users={this.state.users}/>
-          }}
-        /> */}
-
         <Route
-          path="/tasks" render={props => {
-            return null
+          exact
+          path="/tasks/new"
+          render={(props) => {
+            return <TaskForm {...props} addTask={this.addTask} />;
           }}
         />
+        <Route
+          path="/tasks/:taskId(\d+)/edit"
+          render={props => {
+            return (
+              <TaskEditForm
+                {...props}
+                editTask={this.editTask}
+                tasks={this.state.tasks}
+              />
+            );
+          }}
+        />
+
+
+
         <Route
           exact path="/events" render={props => {
             return <Events {...props} deleteEvent={this.deleteEvent} events={this.state.events}/>
@@ -180,9 +248,9 @@ componentDidMount() {
         />
 
         <Route path="/login" component={Login} />
-
       </React.Fragment>
     );
   }
 }
 
+export default withRouter(ApplicationViews)
