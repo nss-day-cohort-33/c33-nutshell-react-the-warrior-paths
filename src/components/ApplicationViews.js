@@ -3,14 +3,16 @@ import React, { Component } from "react";
 import Welcome from "./authentication/Welcome"
 import Login from "./authentication/Login"
 import Register from "./authentication/Register"
-import News from "./news/News"
+import News from './news/News'
+import NewsForm from "./news/NewsForm";
+import NewsEditForm from "./news/NewsEditForm";
+import Messages from './message/Messages'
+import APIManager from '../modules/APIManager'
 import EventsForm from "./event/eventsForm"
 import Events from "./event/Events"
-import APIManager from "../modules/APIManager"
 import EditForm from "./event/editForm";
-import {withRouter} from "react-router"
+
 export default class ApplicationViews extends Component {
-  
 
   state = {
     users: [],
@@ -23,20 +25,51 @@ export default class ApplicationViews extends Component {
 
 componentDidMount() {
     const newState = {};
-
     APIManager.getAll("events")
-          .then(events => (newState.events = events))
-          fetch("http://localhost:5002/messages")
-            .then(r => r.json())
-            .then(message => newState.messages = message)
-            .then(fetch("http://localhost:5002/users")
-            .then(r => r.json()))
-            .then(user => newState.users = user)
-            .then(() => this.setState(newState))
-          }
-          
-          
-        
+    .then(events => (newState.events = events))
+    fetch("http://localhost:5002/messages")
+      .then(r => r.json())
+      .then(message => newState.messages = message)
+      .then(fetch("http://localhost:5002/users")
+      .then(r => r.json()))
+      .then(user => newState.users = user)
+      .then(() => this.setState(newState))
+    }
+
+  isAuthenticated = () => sessionStorage.getItem("current_user") !== null
+
+// NEWS FUNCTIONS BEGIN
+  deleteArticle = id => {
+    return APIManager.delete("news", id)
+      .then(() => APIManager.getAll("news"))
+      .then(news => {
+        this.setState({
+          news: news
+        });
+      });
+  };
+
+  addArticle = article => {
+    return APIManager.post("news", article)
+      .then(() => APIManager.getAll("news"))
+      .then(news =>
+        this.setState({
+          news: news
+        })
+      );
+  };
+
+  updateArticle = (editedArticle,id) => {
+    return APIManager.newsPut("news",editedArticle,id )
+      .then(() => APIManager.getAll("news"))
+      .then(news =>
+        this.setState({
+          news: news
+        })
+      );
+  };
+// NEWS FUNCTIONS END
+  //  EVENTS FUNCTIONS BEGIN
         addEvent = event => {
             return APIManager.post("events", event)
               .then(() => APIManager.getAll("events"))
@@ -63,38 +96,46 @@ componentDidMount() {
             });
         };
 
-isAuthenticated = () => sessionStorage.getItem("credentials") !== null
-
-  
+// EVENT FUNCTIONS END
 
   render() {
     return (
       <React.Fragment>
-
         <Route
           exact path="/" render={props => {
             return <Welcome/>
             // Remove null and return the component which will show news articles
           }}
         />
-        
+
         <Route
            path="/register" render={props => {
             return <Register/>
             // Remove null and return the component which will show news articles
           }}
         />
-
-        <Route
-          exact path="/news" render={props => {
+        {/* NEWS ROUTES BEGIN */}
+         <Route exact path="/news" render={props => {
             if (this.isAuthenticated()) {
-              return <News users={this.state.users} />
+              return (
+                <News {...props} deleteArticle={this.deleteArticle} news={this.state.news}
+                />
+              );
             } else {
-              return <Redirect to="/login" />
+              return <Redirect to="/" />;
             }
           }}
         />
-
+        <Route exact path="/news/new" render={props => {
+            return <NewsForm {...props} addArticle={this.addArticle} />;
+          }}
+        />
+        <Route exact path="/news/:newsId(\d+)/edit" render={props => {
+            return <NewsEditForm {...props} updateArticle={this.updateArticle} />
+            ;
+          }}
+        />
+        {/* NEWS ROUTES END */}
         <Route
           exact path="/register" render={props => {
             return <Register {...props} users={this.state.users} addUser={this.addUser}/>
@@ -109,7 +150,7 @@ isAuthenticated = () => sessionStorage.getItem("credentials") !== null
 
         {/* <Route
           path="/messages" render={props => {
-            return <Messages messages={this.state.messages} 
+            return <Messages messages={this.state.messages}
                   users={this.state.users}/>
           }}
         /> */}
@@ -117,7 +158,6 @@ isAuthenticated = () => sessionStorage.getItem("credentials") !== null
         <Route
           path="/tasks" render={props => {
             return null
-            // Remove null and return the component which will show the user's tasks
           }}
         />
         <Route

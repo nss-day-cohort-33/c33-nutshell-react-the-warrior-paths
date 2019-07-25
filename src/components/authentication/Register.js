@@ -19,7 +19,7 @@ class Register extends Component {
               users: users
             })
           );
-      };       
+      };
 
     handleFieldChange = (evt) => {
         const stateToChange = {}

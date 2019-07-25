@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { withRouter } from 'react-router-dom'
 import APIManager from '../../modules/APIManager';
-// import {Link} from 'react-router-dom'
+
 
 class Login extends Component {
 
@@ -10,7 +10,6 @@ class Login extends Component {
         password: "",
         id: ""
     }
-
 
     handleFieldChange = (evt) => {
         const stateToChange = {}
@@ -26,7 +25,7 @@ class Login extends Component {
                 el => el.username.toLowerCase() === this.state.username.toLowerCase() && el.password.toLowerCase() === this.state.password.toLowerCase()
             )
             if (singleUser) {
-                sessionStorage.setItem("userId", singleUser.id)
+                sessionStorage.setItem("current_user", singleUser.id)
                 this.props.history.push('/news')
             }
         })

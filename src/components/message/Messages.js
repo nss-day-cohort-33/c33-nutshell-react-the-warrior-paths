@@ -15,9 +15,3 @@ export default class Message extends Component {
       );
     }
   }
-
-//   {
-//     this.props.users
-//         .filter(user => user.id === users.id)
-//         .map(user => <AnimalCard key={anml.id} animal={anml} {...this.props} />)
-// } 
