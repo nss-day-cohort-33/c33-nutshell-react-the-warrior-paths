@@ -1,6 +1,5 @@
 import { Route, Redirect } from "react-router-dom";
 import React, { Component } from "react";
-<<<<<<< HEAD
 import { withRouter } from 'react-router'
 import Welcome from "./authentication/Welcome";
 import Login from "./authentication/Login";
@@ -11,6 +10,11 @@ import Messages from "./message/Messages";
 import TaskForm from "./task/TaskForm";
 import TaskList from "./task/TaskList";
 import TaskEditForm from "./task/TasksEditForm"
+import NewsForm from "./news/NewsForm";
+import NewsEditForm from "./news/NewsEditForm";
+import EventsForm from "./event/eventsForm"
+import Events from "./event/Events"
+import EditForm from "./event/editForm";
 
  class ApplicationViews extends Component {
   state = {
@@ -21,32 +25,25 @@ import TaskEditForm from "./task/TasksEditForm"
     users: []
   };
 
+
+
+
   componentDidMount() {
     const newState = {};
-
-    //   fetch("http://localhost:5002/messages")
-    //     .then(r => r.json())
-    //     .then(message => newState.messages = message)
-    //     .then(fetch("http://localhost:5002/users")
-    //     .then(r => r.json()))
-    //     .then(user => newState.users = user)
-    //     .then(() => this.setState(newState))
-    // }
-
     APIManager.getAll("tasks")
       .then(tasks => (newState.tasks = tasks))
-      // }).then(() => APIManager.getAll("events").then(events => {
-      //   newState.events = events
-      // })).then(() => APIManager.getAll("articles").then(articles => {
-      //   newState.articles = articles
-      // })).then(() => APIManager.getAll("messages").then(messages => {
-      //   newState.messages = message
-      // }))
-      .then(() => APIManager.getAll("users").then(users => {
-        newState.users = users
-      }))
-      .then(() => this.setState(newState));
-  }
+    APIManager.getAll("events")
+    .then(events => (newState.events = events))
+    fetch("http://localhost:5002/messages")
+      .then(r => r.json())
+      .then(message => newState.messages = message)
+      .then(fetch("http://localhost:5002/users")
+      .then(r => r.json()))
+      .then(user => newState.users = user)
+      .then(() => this.setState(newState))
+    }
+
+
 
   isAuthenticated = () => sessionStorage.getItem("credentials") !== null;
   activeUserId = () => parseInt(sessionStorage.getItem("credentials"))
@@ -80,44 +77,7 @@ import TaskEditForm from "./task/TasksEditForm"
         this.setState({ tasks: tasks });
       });
   };
-=======
-import Welcome from "./authentication/Welcome"
-import Login from "./authentication/Login"
-import Register from "./authentication/Register"
-import News from './news/News'
-import NewsForm from "./news/NewsForm";
-import NewsEditForm from "./news/NewsEditForm";
-import Messages from './message/Messages'
-import APIManager from '../modules/APIManager'
-import EventsForm from "./event/eventsForm"
-import Events from "./event/Events"
-import EditForm from "./event/editForm";
 
-export default class ApplicationViews extends Component {
-
-  state = {
-    users: [],
-    messages: [],
-    news: [],
-    events: [],
-    tasks: [],
-    friends: []
-}
-
-componentDidMount() {
-    const newState = {};
-    APIManager.getAll("events")
-    .then(events => (newState.events = events))
-    fetch("http://localhost:5002/messages")
-      .then(r => r.json())
-      .then(message => newState.messages = message)
-      .then(fetch("http://localhost:5002/users")
-      .then(r => r.json()))
-      .then(user => newState.users = user)
-      .then(() => this.setState(newState))
-    }
-
-  isAuthenticated = () => sessionStorage.getItem("current_user") !== null
 
 // NEWS FUNCTIONS BEGIN
   deleteArticle = id => {
@@ -178,58 +138,20 @@ componentDidMount() {
         };
 
 // EVENT FUNCTIONS END
->>>>>>> 7ee6e68b3bf9062bd7b1f19b146730023327e2c0
 
   render() {
     return (
       <React.Fragment>
         <Route
-<<<<<<< HEAD
           exact
           path="/"
           render={props => {
             return <Welcome />;
-=======
-          exact path="/" render={props => {
-            return <Welcome/>
->>>>>>> 7ee6e68b3bf9062bd7b1f19b146730023327e2c0
             // Remove null and return the component which will show news articles
           }}
         />
 
-<<<<<<< HEAD
-        <Route
-          exact
-          path="/news"
-          render={props => {
-            if (this.isAuthenticated()) {
-              return <News users={this.state.users} />;
-            } else {
-              return <Redirect to="/login" />;
-            }
-          }}
-        />
 
-        <Route
-          exact
-          path="/register"
-          render={props => {
-            return (
-              <Register
-                {...props}
-                users={this.state.users}
-                addUser={this.addUser}
-              />
-            );
-          }}
-        />
-
-        <Route
-          path="/friends"
-          render={props => {
-            return null;
-          }}
-        />
 
         <Route
           path="/messages"
@@ -240,14 +162,9 @@ componentDidMount() {
                 users={this.state.users}
               />
             );
-=======
-        <Route
-           path="/register" render={props => {
-            return <Register/>
-            // Remove null and return the component which will show news articles
-          }}
-        />
-        {/* NEWS ROUTES BEGIN */}
+            }
+          }
+          />
          <Route exact path="/news" render={props => {
             if (this.isAuthenticated()) {
               return (
@@ -272,12 +189,10 @@ componentDidMount() {
         <Route
           exact path="/register" render={props => {
             return <Register {...props} users={this.state.users} addUser={this.addUser}/>
->>>>>>> 7ee6e68b3bf9062bd7b1f19b146730023327e2c0
           }}
         />
 
         <Route
-<<<<<<< HEAD
           exact
           path="/tasks"
           render={(props) => {
@@ -308,24 +223,11 @@ componentDidMount() {
                 tasks={this.state.tasks}
               />
             );
-=======
-          path="/friends" render={props => {
-            return null
           }}
         />
 
-        {/* <Route
-          path="/messages" render={props => {
-            return <Messages messages={this.state.messages}
-                  users={this.state.users}/>
-          }}
-        /> */}
 
-        <Route
-          path="/tasks" render={props => {
-            return null
-          }}
-        />
+
         <Route
           exact path="/events" render={props => {
             return <Events {...props} deleteEvent={this.deleteEvent} events={this.state.events}/>
@@ -342,21 +244,13 @@ componentDidMount() {
           exact path="/events/:eventId(\d+)/edit" render={props => {
             return <EditForm {...props} editEvent={this.editEvent} events={this.state.events} />
             // Remove null and return the component which will show the user's tasks
->>>>>>> 7ee6e68b3bf9062bd7b1f19b146730023327e2c0
           }}
         />
 
         <Route path="/login" component={Login} />
-<<<<<<< HEAD
-=======
-
->>>>>>> 7ee6e68b3bf9062bd7b1f19b146730023327e2c0
       </React.Fragment>
     );
   }
 }
 
-<<<<<<< HEAD
 export default withRouter(ApplicationViews)
-=======
->>>>>>> 7ee6e68b3bf9062bd7b1f19b146730023327e2c0

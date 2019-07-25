@@ -8,11 +8,6 @@ export default Object.create(null, {
       return fetch(`${remoteURL}/${resource}/${id}`).then(e => e.json());
     }
   },
-<<<<<<< HEAD
-//get all entries
-=======
-
->>>>>>> 7ee6e68b3bf9062bd7b1f19b146730023327e2c0
   getAll: {
     value: function(resource) {
       return fetch(`${remoteURL}/${resource}`).then(e => e.json());
@@ -78,8 +73,5 @@ export default Object.create(null, {
 });
 
 
-<<<<<<< HEAD
-=======
 
 
->>>>>>> 7ee6e68b3bf9062bd7b1f19b146730023327e2c0
