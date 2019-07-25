@@ -8,7 +8,11 @@ export default Object.create(null, {
       return fetch(`${remoteURL}/${resource}/${id}`).then(e => e.json());
     }
   },
+<<<<<<< HEAD
 //get all entries
+=======
+
+>>>>>>> 7ee6e68b3bf9062bd7b1f19b146730023327e2c0
   getAll: {
     value: function(resource) {
       return fetch(`${remoteURL}/${resource}`).then(e => e.json());
@@ -59,7 +63,23 @@ export default Object.create(null, {
         body: JSON.stringify(editedThing)
       }).then(data => data.json());
     }
+  },
+  newsPut: {
+    value: function(resource, editedAnimal, id) {
+      return fetch(`${remoteURL}/${resource}/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(editedAnimal)
+      }).then(data => data.json());
+    }
   }
 });
 
 
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> 7ee6e68b3bf9062bd7b1f19b146730023327e2c0

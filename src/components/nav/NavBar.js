@@ -9,7 +9,7 @@ class NavBar extends Component {
             <nav className="navbar navbar-light light-blue flex-md-nowrap p-0 shadow">
                 <ul className="nav nav-pills nav-fill">
                     <li className="nav-item">
-                        <Link className="nav-link" to="/">News</Link>
+                        <Link className="nav-link" to="/news">News</Link>
                     </li>
                     <li className="nav-item">
                         <Link className="nav-link" to="/friends">Friends</Link>
@@ -20,9 +20,15 @@ class NavBar extends Component {
                     <li className="nav-item">
                         <Link className="nav-link" to="/tasks">Tasks</Link>
                     </li>
+<<<<<<< HEAD
                     <li>
                 <Link className="nav-link nav_link_colors" to="/welcome" onClick={() => this.logoutUser()}>Logout</Link>
               </li>
+=======
+                    <li className="nav-item">
+                        <Link className="nav-link" to="/events">Events</Link>
+                    </li>
+>>>>>>> 7ee6e68b3bf9062bd7b1f19b146730023327e2c0
                 </ul>
             </nav>
         )

@@ -1,8 +1,13 @@
 import React, { Component } from 'react'
 import { withRouter } from 'react-router-dom'
 import APIManager from '../../modules/APIManager';
+<<<<<<< HEAD
 // import {Link} from 'react-router-dom'
 
+=======
+
+
+>>>>>>> 7ee6e68b3bf9062bd7b1f19b146730023327e2c0
 class Login extends Component {
 
     state = {
@@ -26,10 +31,16 @@ class Login extends Component {
                 el => el.username.toLowerCase() === this.state.username.toLowerCase() && el.password.toLowerCase() === this.state.password.toLowerCase()
             )
             if (singleUser) {
+<<<<<<< HEAD
                 sessionStorage.setItem("userId", singleUser.id)
 
             }
             this.props.history.push('/news')
+=======
+                sessionStorage.setItem("current_user", singleUser.id)
+                this.props.history.push('/news')
+            }
+>>>>>>> 7ee6e68b3bf9062bd7b1f19b146730023327e2c0
         })
     }
 
