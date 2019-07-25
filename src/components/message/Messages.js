@@ -29,18 +29,22 @@ export default class Message extends Component {
   render() {
     return (
       <React.Fragment>
-        <section className="messages">
-          {this.props.messages
-            // .filter(msg => msg.userId === users.id)
-            // .filter(message => message.userId === parseInt(sessionStorage.getItem("credentials")))
-            .map(message => (
-              <div key={message.id}>
-                <MessageCard message={message} {...this.props} />
-              </div>
-            ))}
-        </section>
-        <input id="message" onChange={this.handleFieldChange} type="text" />
-        <button onClick={this.handleClick} type="submit">Send</button>
+        <div>
+          <section className="messages">
+            {this.props.messages
+              // .filter(msg => msg.userId === users.id)
+              // .filter(message => message.userId === parseInt(sessionStorage.getItem("credentials")))
+              .map(message => (
+                <div key={message.id}>
+                  <MessageCard message={message} {...this.props} />
+                </div>
+              ))}
+          </section>
+        </div>
+        <div className="addMsg">
+          <input id="message" onChange={this.handleFieldChange} type="text" />
+          <button onClick={this.handleClick} type="submit" className="sendBtn">Send</button>
+        </div>
       </React.Fragment>
     );
   }
