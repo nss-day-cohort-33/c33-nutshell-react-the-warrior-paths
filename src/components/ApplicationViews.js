@@ -3,27 +3,14 @@ import React, { Component } from "react";
 import Welcome from "./authentication/Welcome"
 import Login from "./authentication/Login"
 import Register from "./authentication/Register"
+import News from "./news/News"
+import EventsForm from "./event/eventsForm"
+import Events from "./event/Events"
+import APIManager from "../modules/APIManager"
+import EditForm from "./event/editForm";
+import {withRouter} from "react-router"
 export default class ApplicationViews extends Component {
-  state = {
-    // users: [],
-    events: [],
-    messages: [],
-    tasks: [],
-    news: [],
-  }
-
-  componentDidMount() {
-    const newState = {}
-
-    fetch("http://localhost:5002/users")
-      .then(r => r.json())
-      .then(user => newState.users = user)
-      // .then(fetch("http://localhost:3000/news"))
-      // .then(r => r.json())
-      // .then(news => newState.news = news)
-  }
-
-  isAuthenticated = () => sessionStorage.getItem("credentials") !== null
+  
 
   state = {
     users: [],
@@ -37,12 +24,40 @@ export default class ApplicationViews extends Component {
 componentDidMount() {
     const newState = {};
 
-fetch("http://localhost:5002/users")
-  .then(r => r.json())
-  .then(user => newState.users=user)
-}
+    APIManager.getAll("events")
+          .then(events => (newState.events = events))
+          .then(() => this.setState(newState))
+          
+          
+        }
+        addEvent = event => {
+            return APIManager.post("events", event)
+              .then(() => APIManager.getAll("events"))
+              .then(events =>
+                this.setState({
+                  events: events
+                })
+              );
+        }
+        deleteEvent = id => {
+          return APIManager.delete("events", id)
+            .then(() => APIManager.getAll("events"))
+            .then(events => {
+              // this.props.history.push("/events");
+              this.setState({ events: events });
+            });
+        };
+        editEvent = (editedEventObject) => {
+          return APIManager.put("events", editedEventObject)
+            .then(() => APIManager.getAll("events"))
+            .then(events => {
+
+              this.setState({ events: events });
+            });
+        };
 
 isAuthenticated = () => sessionStorage.getItem("credentials") !== null
+
 
 
 
@@ -52,23 +67,14 @@ isAuthenticated = () => sessionStorage.getItem("credentials") !== null
         
         <Route
           exact path="/" render={props => {
-<<<<<<< HEAD
-            return <Welcome />
-=======
             return <Welcome/>
             // Remove null and return the component which will show news articles
           }}
         />
-        <Route
-           path="/login" render={props => {
-            return <Login/>
-            // Remove null and return the component which will show news articles
-          }}
-        />
+        
         <Route
            path="/register" render={props => {
             return <Register/>
->>>>>>> master
             // Remove null and return the component which will show news articles
           }}
         />
@@ -114,12 +120,31 @@ isAuthenticated = () => sessionStorage.getItem("credentials") !== null
             // Remove null and return the component which will show the user's tasks
           }}
         />
+        <Route
+          exact path="/events" render={props => {
+            return <Events {...props} deleteEvent={this.deleteEvent} events={this.state.events}/>
+            // Remove null and return the component which will show the user's tasks
+          }}
+        />
+        <Route
+          exact path="/events/eventsform" render={props => {
+            return <EventsForm {...props} addEvent={this.addEvent} />
+            // Remove null and return the component which will show the user's tasks
+          }}
+        />
+        <Route
+          exact path="/events/:eventId(\d+)/edit" render={props => {
+            return <EditForm {...props} editEvent={this.editEvent} events={this.state.events} />
+            // Remove null and return the component which will show the user's tasks
+          }}
+        />
 
-<<<<<<< HEAD
-        <Route path="/login" component={Login} />
 
-=======
->>>>>>> master
+
+<Route path = "/login" component = {Login} />
+
+        
+
       </React.Fragment>
     );
   }
