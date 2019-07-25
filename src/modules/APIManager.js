@@ -46,6 +46,17 @@ export default Object.create(null, {
   },
 
   put: {
+    value: function(resource, editedAnimal) {
+      return fetch(`${remoteURL}/${resource}/${editedAnimal.id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(editedAnimal)
+      }).then(data => data.json());
+    }
+  },
+  newsPut: {
     value: function(resource, editedAnimal, id) {
       return fetch(`${remoteURL}/${resource}/${id}`, {
         method: "PUT",
@@ -57,3 +68,7 @@ export default Object.create(null, {
     }
   }
 });
+
+
+
+
