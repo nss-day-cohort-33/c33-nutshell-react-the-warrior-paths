@@ -7,6 +7,7 @@ import News from './news/News'
 import NewsForm from "./news/NewsForm";
 import NewsEditForm from "./news/NewsEditForm";
 import Messages from './message/Messages'
+import APIManager from '../modules/APIManager'
 
 export default class ApplicationViews extends Component {
   state = {
@@ -25,11 +26,30 @@ export default class ApplicationViews extends Component {
       .then(fetch("http://localhost:5002/users")
       .then(r => r.json()))
       .then(user => newState.users = user)
-      .then(() => this.setState(newState))
       .then(fetch("http://localhost:5002/news"))
       .then(news => (newState.news = news))
       .then(() => this.setState(newState));
   }
+
+  deleteArticle = id => {
+    return APIManager.delete("news", id)
+      .then(() => APIManager.getAll("news"))
+      .then(news => {
+        this.setState({
+          news: news
+        });
+      });
+  };
+
+  addArticle = article => {
+    return APIManager.post(article, "news")
+      .then(() => APIManager.getAll("news"))
+      .then(news =>
+        this.setState({
+          news: news
+        })
+      );
+  };
 
   isAuthenticated = () => sessionStorage.getItem("current_user") !== null
 
@@ -64,7 +84,7 @@ export default class ApplicationViews extends Component {
         />
         <Route
           exact
-          path="/news/news"
+          path="/news/new"
           render={props => {
             return <NewsForm {...props} addArticle={this.addArticle} />;
           }}
