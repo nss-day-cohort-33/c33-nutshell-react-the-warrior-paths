@@ -16,7 +16,7 @@ import EventsForm from "./event/eventsForm"
 import Events from "./event/Events"
 import EditForm from "./event/editForm";
 
- class ApplicationViews extends Component {
+class ApplicationViews extends Component {
   state = {
     events: [],
     messages: [],
@@ -33,18 +33,18 @@ import EditForm from "./event/editForm";
     APIManager.getAll("tasks")
       .then(tasks => (newState.tasks = tasks))
     APIManager.getAll("events")
-    .then(events => (newState.events = events))
+      .then(events => (newState.events = events))
     fetch("http://localhost:5002/messages?_expand=user")
       .then(r => r.json())
       .then(message => newState.messages = message)
       .then(fetch("http://localhost:5002/users")
-      .then(r => r.json()))
+        .then(r => r.json()))
       .then(user => newState.users = user)
       .then(() => this.setState(newState))
-    }
+  }
 
 
-
+  isAuthenticated = () => sessionStorage.getItem("credentials") !== null
   activeUserId = () => parseInt(sessionStorage.getItem("credentials"))
 
   addTask = task => {
@@ -75,6 +75,14 @@ import EditForm from "./event/editForm";
       });
   };
 
+  editMessage = (id) => {
+    return APIManager.msgPut("messages", id)
+      .then(() => APIManager.getAll("messages?_expand=user"))
+      .then(message => {
+        this.setState({ messages: message });
+      });
+  };
+
   editTask = (editedTaskObject) => {
     return APIManager.put("tasks", editedTaskObject)
       .then(() => APIManager.getAll("tasks"))
@@ -96,7 +104,7 @@ import EditForm from "./event/editForm";
   };
 
 
-// NEWS FUNCTIONS BEGIN
+  // NEWS FUNCTIONS BEGIN
   deleteArticle = id => {
     return APIManager.delete("news", id)
       .then(() => APIManager.getAll("news"))
@@ -117,8 +125,8 @@ import EditForm from "./event/editForm";
       );
   };
 
-  updateArticle = (editedArticle,id) => {
-    return APIManager.newsPut("news",editedArticle,id )
+  updateArticle = (editedArticle, id) => {
+    return APIManager.newsPut("news", editedArticle, id)
       .then(() => APIManager.getAll("news"))
       .then(news =>
         this.setState({
@@ -126,35 +134,35 @@ import EditForm from "./event/editForm";
         })
       );
   };
-// NEWS FUNCTIONS END
+  // NEWS FUNCTIONS END
   //  EVENTS FUNCTIONS BEGIN
-        addEvent = event => {
-            return APIManager.post("events", event)
-              .then(() => APIManager.getAll("events"))
-              .then(events =>
-                this.setState({
-                  events: events
-                })
-              );
-        }
-        deleteEvent = id => {
-          return APIManager.delete("events", id)
-            .then(() => APIManager.getAll("events"))
-            .then(events => {
-              // this.props.history.push("/events");
-              this.setState({ events: events });
-            });
-        };
-        editEvent = (editedEventObject) => {
-          return APIManager.put("events", editedEventObject)
-            .then(() => APIManager.getAll("events"))
-            .then(events => {
+  addEvent = event => {
+    return APIManager.post("events", event)
+      .then(() => APIManager.getAll("events"))
+      .then(events =>
+        this.setState({
+          events: events
+        })
+      );
+  }
+  deleteEvent = id => {
+    return APIManager.delete("events", id)
+      .then(() => APIManager.getAll("events"))
+      .then(events => {
+        // this.props.history.push("/events");
+        this.setState({ events: events });
+      });
+  };
+  editEvent = (editedEventObject) => {
+    return APIManager.put("events", editedEventObject)
+      .then(() => APIManager.getAll("events"))
+      .then(events => {
 
-              this.setState({ events: events });
-            });
-        };
+        this.setState({ events: events });
+      });
+  };
 
-// EVENT FUNCTIONS END
+  // EVENT FUNCTIONS END
 
   render() {
     return (
@@ -173,38 +181,43 @@ import EditForm from "./event/editForm";
         <Route
           path="/messages"
           render={props => {
-              return <Messages messages={this.state.messages} 
-              addMessage={this.addMessage} 
-              deleteMessage={this.deleteMessage}
-              users={this.state.users}/>
-              
-            }
-          }
-          />
-         <Route exact path="/news" render={props => {
-            // if (this.isAuthenticated()) {
+            if (this.isAuthenticated()) {
               return (
-                <News {...props} deleteArticle={this.deleteArticle} news={this.state.news}
-                />
-              );
-            // } else {
-            //   return <Redirect to="/" />;
-            // }
+                <Messages messages={this.state.messages}
+                  addMessage={this.addMessage}
+                  deleteMessage={this.deleteMessage}
+                  editMessage={this.editMessage}
+                  users={this.state.users} />
+              )
+            } else {
+              return <Redirect to="/welcome" />
+            }
           }}
+        />
+        <Route exact path="/news" render={props => {
+          // if (this.isAuthenticated()) {
+          return (
+            <News {...props} deleteArticle={this.deleteArticle} news={this.state.news}
+            />
+          );
+          // } else {
+          //   return <Redirect to="/" />;
+          // }
+        }}
         />
         <Route exact path="/news/new" render={props => {
-            return <NewsForm {...props} addArticle={this.addArticle} />;
-          }}
+          return <NewsForm {...props} addArticle={this.addArticle} />;
+        }}
         />
         <Route exact path="/news/:newsId(\d+)/edit" render={props => {
-            return <NewsEditForm {...props} updateArticle={this.updateArticle} />
+          return <NewsEditForm {...props} updateArticle={this.updateArticle} />
             ;
-          }}
+        }}
         />
         {/* NEWS ROUTES END */}
         <Route
           exact path="/register" render={props => {
-            return <Register {...props} users={this.state.users} addUser={this.addUser}/>
+            return <Register {...props} users={this.state.users} addUser={this.addUser} />
           }}
         />
 
@@ -246,7 +259,7 @@ import EditForm from "./event/editForm";
 
         <Route
           exact path="/events" render={props => {
-            return <Events {...props} deleteEvent={this.deleteEvent} events={this.state.events}/>
+            return <Events {...props} deleteEvent={this.deleteEvent} events={this.state.events} />
             // Remove null and return the component which will show the user's tasks
           }}
         />
